@@ -82,7 +82,7 @@ contract CaosCrowdsale is Ownable{
   mapping(address => bool) public approvals;
   mapping(address => uint256) public balances;
 
-  event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+  event TokenPurchase(address indexed purchaser, uint256 value, uint256 amount);
   event KycApproved(address indexed beneficiary, address indexed admin, bool status);
   event KycRefused(address indexed beneficiary, address indexed admin, bool status);
 
@@ -102,19 +102,19 @@ contract CaosCrowdsale is Ownable{
   }
 
   function () external payable {
-    buyTokens(msg.sender);
+    buyTokens();
   }
 
-  function buyTokens(address _beneficiary) public onlyWhileOpen() payable {
+  function buyTokens() public onlyWhileOpen() payable {
     require(msg.value > 0);
-    require(approvals[_beneficiary] == true);
+    require(approvals[msg.sender] == true);
     uint256 weiAmount = msg.value;
     uint256 tokenAmount = weiAmount.mul(rate);
     tokensAllocated = tokensAllocated.add(tokenAmount);
     assert(tokensAllocated <= hardCap);
     weiRaised = weiRaised.add(weiAmount);
-    balances[_beneficiary] = balances[_beneficiary].add(tokenAmount);
-    emit TokenPurchase(msg.sender, _beneficiary, weiAmount, tokenAmount);
+    balances[msg.sender] = balances[msg.sender].add(tokenAmount);
+    emit TokenPurchase(msg.sender, weiAmount, tokenAmount);
     wallet.transfer(msg.value);
   }
 
@@ -167,6 +167,7 @@ contract CaosCrowdsale is Ownable{
   }
 
   function startDistribution() external onlyOwner() {
+    require(openingTime == 0);
     openingTime = block.timestamp;
     closingTime = openingTime.add(duration);
   }

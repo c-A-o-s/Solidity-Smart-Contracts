@@ -134,6 +134,7 @@ contract AdjustableToken is ERC20, Ownable {
     balances[msg.sender] = balances[msg.sender].sub(_value);
     totalSupply_ = totalSupply_.sub(_value);
     emit Adjusted(msg.sender, _value);
+    emit Transfer(msg.sender, address(0), _value);
   }
 }
 
