@@ -89,16 +89,16 @@ contract CaosCrowdsale is Ownable{
   modifier onlyKycAdmin() { require(msg.sender == kycAdmin); _; }
   modifier onlyWhileOpen { require(block.timestamp >= openingTime && block.timestamp <= closingTime); _; }
 
-  constructor(uint256 _rate, address _wallet, uint256 _duration, uint256 _hardCap, ERC20 _token) public {
+  constructor(uint256 _rate, address _wallet, uint256 _duration, uint256 _hardCap, ERC20 _tokenAddress) public {
     require(_rate > 0);
     require(_wallet != address(0));
-    require(_token != address(0));
+    require(_tokenAddress != address(0));
 
     rate = _rate;
     wallet = _wallet;
-    token = _token;
-    hardCap = _hardCap.mul(10**18);
-    duration = _duration.mul(1 hours);
+    token = _tokenAddress;
+    hardCap = _hardCap * 10**18;
+    duration = _duration * 1 days;
   }
 
   function () external payable {

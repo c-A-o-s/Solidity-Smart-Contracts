@@ -146,7 +146,7 @@ contract CaosToken is AdjustableToken {
     name = _name;
     symbol = _symbol;
     decimals = _decimals;
-    totalSupply_ = _initialSupply.mul(10**uint256(decimals));
+    totalSupply_ = _initialSupply * 10**uint256(decimals);
     balances[msg.sender] = totalSupply_;
   }
 }
